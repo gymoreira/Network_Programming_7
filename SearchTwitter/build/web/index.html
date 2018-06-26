@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Search on twitter</title>
+        <script>
+            function load(){
+                var search = document.getElementById("search").value;
+                var url ="http://adam.uefs.br/ponto/GeoJson?type=twitter&region=fsa&properties=true&keywords="+search;
+                console.log(url);
+                if (window.XMLHttpRequest){
+                    ajax = new XMLHttpRequest();//for Chrome, mozilla etc
+                }
+                else if(window.ActiveXObject){
+                    ajax = new ActiveXObject("Microsoft.XMLHTTP");//for IE only
+                }
+                ajax.onreadystatechange = function(){
+                    if(ajax.readyState == 4 ){
+                        var jsonObj = JSON.parse(ajax.responseText);//JSON.parse()
+                        var text="<br>";;
+                        if(jsonObj.features.length!=0){
+                            for(i=0; i<jsonObj.features.length;i++){
+                                text="<br>"+jsonObj.features[i].properties.txt+"<br>"+text;
+                            }
+                            document.getElementById("twitter").innerHTML = text; 
+                        }
+                        else{                   
+                        document.getElementById("twitter").innerHTML="<br>Nothing was found!";
+                        }
+                    }
+                }
+                ajax.open("GET",url,true);
+                ajax.send();
+            }
+        </script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            <H2 align= "center" >Search twitter in Feira de Santana</H2><HR><br>
+            <br><input type="text" placeholder="Search..." id="search">
+            <button type="button" onclick="load()">Search</button><br>
+            <br>Twitters:
+        </div>
+        <div id="twitter">
+        </div>
+    </body>
+</html>
